@@ -1,0 +1,36 @@
+{% extends "base_generic.html" %}
+
+{% block login %}
+<a href="/login" class="btn btn-outline-warning" style="color:black;">login</a>
+
+{% endblock %}
+
+{% block content %}
+<h1>NewsFlash Home</h1>
+
+  <p>Welcome to <em>NewsFlash</em>, the easiest, best way to read the news!</p>
+    {%if current_user %}
+      <h2>{{ current_user }} worked!</h2>
+      <h2>{{ current_user.is_authenticated }}</h2>
+    {% else %}
+      <h2>user not found did not work work :/</h2>
+    {% endif %}
+  <br>
+
+{% endblock %}
+
+<!--   {% for post in num_posts %}
+  <div class="well">
+  <ul class="list-group single-post">
+    <li class="list-group-item"><strong>Title: </strong> {{ post.title }}</li>
+    <li class="list-group-item list-group-item-success"><strong>Author: </strong> {{ post.author }}</li>
+    <li class="list-group-item list-group-item-info"><strong>Link: </strong><a href="{{ post.url }}" target="_blank"> Click to View Story</a></li>
+  </ul>
+</div>
+  {% endfor %} -->
+
+
+{% block logout %}
+<a href="/logout" class="btn btn-outline-warning" style="color:black;">logout </a>
+
+{% endblock %}
