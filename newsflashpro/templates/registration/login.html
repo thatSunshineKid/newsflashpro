@@ -5,6 +5,10 @@
 <title>NewsFlash</title>
 </head>
 
+    {% if form.errors %}
+          <p class="error" style="padding:100px;">Email or password incorrect</p>
+    {% endif %}
+
 <title>Login</title>
         <form method="POST" style="padding:100px;">
             {% csrf_token %}
@@ -19,7 +23,5 @@
             </p>
             <button type="submit">Login</button>
         </form>
-        {% if form.errors %}
-          <p class="error" style="padding:100px;">Email or password incorrect</p>
-        {% endif %}
+
 </html>
