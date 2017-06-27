@@ -120,4 +120,5 @@ USE_TZ = True
 
 
 LOGIN_REDIRECT_URL = '/flash/'
+LOGOUT_REDIRECT_URL = '/login/'
 STATIC_URL = '/static/'
