@@ -26,5 +26,6 @@ urlpatterns = [
     url(r'^logout/$', auth_views.logout, name='logout'),
     url(r'^$', auth_views.login, name='login'),
     url(r'^flash/$', include('flash.urls')),
+    url(r'^accounts/login/$', auth_views.LoginView.as_view()),
 ]
 

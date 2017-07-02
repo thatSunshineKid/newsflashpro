@@ -5,10 +5,16 @@ from django.views import generic
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 
+from django.contrib.auth.decorators import login_required
+
+from .models import Author, Post
 
 
+@login_required()
 def index(request):
-  current_user = request.user
+  current_user = request.user.author
+
+
 
 
   return render(
