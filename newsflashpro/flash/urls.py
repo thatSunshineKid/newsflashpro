@@ -7,10 +7,15 @@ from django.contrib.auth import views as auth_views
 
 from .views import index
 
+from .views import PostCreate, CreateAuthorView
+
 
 
 urlpatterns = [
   url(r'^$', index, name='index'),
+  url(r'^create/', PostCreate.as_view(), name="PostCreate"),
+  url(r'^signup/', CreateAuthorView.as_view(), name="CreateAuthorView")
+
 
 
 ]
