@@ -39,20 +39,26 @@ class CreateAuthorView( SuccessMessageMixin, CreateView):
     success_url = '/login/'
 
 
-    def get_form_kwargs(self):
-        kw = super(CreateAuthorView, self).get_form_kwargs()
-        kw['request'] = self.request
-        # print ('request capture. %s.' %(kw['request']))  #the trick!
-        return kw
+    def get_context_data(self, **kwargs):
+        context = super(CreateAuthorView, self).get_context_data(**kwargs)
+        context['request'] = self.request
+        return context
+
+    def get(self, request, *args, **kwargs):
+        if self.request.user.is_authenticated:
+            # print('user is already loggedd in.')
+            messages.info(request, "Looks like you are already logged in, %s! No need for a new account." % self.request.user.username, extra_tags='alert alert-info')
+            return render(request, 'index.html',{'current_user':self.request.user.author})
+        else:
+            form_class = CreateAuthorForm
+            return render(request, 'flash/author_form.html',{'form': form_class})
+
 
 
 
     def form_valid(self, form):
         # take this code, find the right method, and
-        if self.request.user.is_authenticated:
-            print('user is already loggedd in.')
-            messages.info(self.request, "Looks like you are already logged in, %s! No need for a new account." % self.request.user.username, extra_tags='alert alert-info')
-            return render(self.request, 'index.html',{'current_user':self.request.user.author})
+
         c = {'form': form, }
         user = form.save(commit=False)
         # Cleaned(normalized) data
