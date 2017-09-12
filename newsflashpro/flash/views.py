@@ -35,7 +35,7 @@ class CreateAuthorView( SuccessMessageMixin, CreateView):
     # login_url = reverse_lazy('users:login')
     form_class = CreateAuthorForm
     template_name = 'flash/author_form.html'
-    success_message = 'new user profile has been created!\nPlease login with your new username and password below.'
+    # success_message = 'new user profile has been created!\nPlease login with your new username and password below.'
     success_url = '/login/'
 
 
@@ -74,7 +74,8 @@ class CreateAuthorView( SuccessMessageMixin, CreateView):
 
         # Create UserProfile model
         author = Author.objects.create(user=user, phone_number=phone_number)
-
+        if author:
+            messages.success(self.request, "Welcome, %s! Please sign in with your password below." % user.username, extra_tags='success alert-success' )
 
         return super(CreateAuthorView, self).form_valid(form)
 
