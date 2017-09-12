@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+{% extends "base_generic.html" %}
+
+{% block content %}
+
+    <title>Login</title>
+        {% if form.errors %}
+          <p class="error" style="">username or password incorrect</p>
+        {% endif %}
+        <form method="POST" style="">
+            {% csrf_token %}
+              <strong><label style="padding:20px">NewsFlash Login</label></strong>
+            <p>
+                <label>Username</label>
+                <input type="text" name="username">
+            </p>
+            <p>
+                <label>Password</label>
+                <input type="password" name="password">
+            </p>
+            <button type="submit">Login</button>
+        </form>
+{% endblock %}
+
+{% block logout %}
+<p>Not a registered user yet?</p>
+<a href="/signup" class="btn btn-outline-info" style="color:black;">Sign up Now!</a>
+
+{% endblock %}
+
+
+
+
+</html>
