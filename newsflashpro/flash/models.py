@@ -20,13 +20,14 @@ class Author(models.Model):
 
     def __str__(self):
 
-        return '%s %s' % (self.user.first_name, self.user.last_name)
+        return '%s %s' % (self.user.first_name, self.user.last_name) #check out how we get the first and last name here - use this in context with displaying user info
 
 
 class Post(models.Model):
     title = models.CharField(max_length=100)
     author = models.ForeignKey('Author', on_delete=models.SET_NULL, null=True)
     url = models.URLField(max_length=1000)
+    source = models.ForeignKey('Source', on_delete=models.CASCADE, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -41,7 +42,26 @@ class Post(models.Model):
 
     def get_absolute_url(self):
         """
-        Returns the url to access a particular book instance.
+        Returns the url to access a particular post instance.
         """
         return reverse('post-detail', args=[str(self.id)])
+
+
+class Source(models.Model):
+    base_url = models.CharField(max_length=200, unique=True)
+    title = models.CharField(max_length=200)
+
+    def __str__(self):
+        """
+        String representing the source object.
+        """
+        return self.title
+
+    def get_absolute_url(self):
+        """
+        Returns the url to access a particular post instance.
+        """
+        return reverse('source-detail', args=[str(self.id)])
+
+
 
