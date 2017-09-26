@@ -20,6 +20,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 @login_required()
 def index(request):
   current_user = request.user.author
+  posts = Post.objects.all()
 
 
 
@@ -27,7 +28,7 @@ def index(request):
   return render(
         request,
         'index.html',
-        context={'current_user':current_user},
+        context={'current_user':current_user, 'posts': posts},
     )
 
 
@@ -189,7 +190,7 @@ def AddPost(request):
                 url=new_s, source=valid_s)
             if Poster:
                 messages.success(request, "Your Post has been added %s!" % author , extra_tags='success alert-success' )
-            return render(request, 'index.html', {'current_user': author})
+            return render(request, 'index.html', {'current_user': author, 'posts': Post.objects.all()})
         else:
             messages.error(request, "something went wrong, check logs", extra_tags='danger alert-danger' )
             return render(request, 'flash/post_form.html', {'form': form, 'author': author})
