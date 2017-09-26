@@ -7,7 +7,7 @@ from django.contrib.auth import views as auth_views
 
 from .views import index
 
-from .views import PostCreate, CreateAuthorView
+from .views import AddPost, CreateAuthorView
 
 
 
@@ -18,7 +18,7 @@ urlpatterns = [
   # url(r'^flash/', include('flash.urls')),
   url(r'^accounts/login/$', auth_views.LoginView.as_view()),
   url(r'^flash/$', index, name='index'),
-  url(r'^create/', PostCreate.as_view(), name="PostCreate"),
+  url(r'^create/', AddPost, name="AddPost"),
   url(r'^signup/', CreateAuthorView.as_view(), name="CreateAuthorView"),
 
 

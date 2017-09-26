@@ -3,7 +3,7 @@ from django.views import generic
 from django.shortcuts import render, get_object_or_404
 from django.contrib import messages
 
-from .forms import CreateAuthorForm
+from .forms import CreateAuthorForm, CreatePostForm
 
 # Create your views here.
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -11,7 +11,7 @@ from django.urls import reverse_lazy
 
 from django.contrib.auth.decorators import login_required
 
-from .models import Author, Post
+from .models import Author, Post, Source
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
@@ -88,11 +88,118 @@ class AuthorCreate(CreateView):
     model= Author
 
 
-class PostCreate(LoginRequiredMixin, CreateView):
-    login_url = '/login/'
-    model = Post
-    fields = ['title','author','url']
-    success_url = '/flash'
+# class PostCreate(LoginRequiredMixin, CreateView):
+#     login_url = '/login'
+#     permission_denied_message = "Sorry, you must login to your account first to Post."
+#     # model = Post
+#     form_class = CreatePostForm
+#     template_name = 'flash/post_form.html'
+#     success_url = '/flash'
+
+#     def get_context_data(self, **kwargs):
+#         context = super(PostCreate, self).get_context_data(**kwargs)
+#         context['request'] = self.request
+#         context['form'] = self.get_form()
+#         return context
+
+#     def get(self, request, *args, **kwargs):
+#         user = self.request.user
+#         form_class = CreatePostForm
+#         return render(request, 'flash/post_form.html',{'form': form_class, 'user': user})
+#     #todo write POST method that populates the author and source fields
+
+#     def post(self, request, *args, **kwargs):
+#         waffle = request.POST['url']
+#         source = waffle.split("/")
+#         if source[2]:
+#             url_source = source[2]
+#         else:
+#             url_source = source[0]
+#         try:
+#             match = Source.objects.get(base_url=url_source)
+#         except Source.DoesNotExist:
+#             match = None
+#         if match:
+#             add_source = match
+#         else:
+#             add_source = Source.objects.create(base_url=url_source, title=url_source)
+#         request.POST._mutable = True
+
+#         request.POST['source'] = add_source
+
+#         return super(PostCreate, self).post(request, *args, **kwargs)
+
+
+#         # FUCKKKK MEEEE  okay next step is to write a function based view instead of a class based view.
+#         # use get to grab author, use post to get source of article, and save them mofos.
+
+
+#     def form_valid(self, form):
+#         # user = self.request.user
+#         title = form.cleaned_data['title']
+#         url = form.cleaned_data['url']
+#         author = Author.objects.get(user=self.request.user)
+#         source = self.request.POST['source']
+#         # source_url = url.split("/")
+#         # if source_url[2]:
+#         #     real_source = source_url[2]
+#         # else:
+#         #     real_source = source_url[0]
+#         # try:
+#         #     match = Source.objects.get(base_url=real_source)
+#         # except Source.DoesNotExist:
+#         #     match = None
+#         # if match:
+#         #     add_source = match
+#         # else:
+#         #     add_source = Source.objects.create(base_url=real_source, title=real_source)
+#         # post = form.save(commit=False)
+#         # post.author = user.author
+#         # post.source = add_source
+#         # post.save()
+#         Poster = Post.objects.create(author=author, title=title, url=url, source=source)
+#         if Poster:
+#             messages.success(self.request, "Your Post has been added %s!" % user.username, extra_tags='success alert-success' )
+#             return super(PostCreate, self).form_valid(form)
+
+@login_required()
+def AddPost(request):
+    author = request.user.author
+    if request.method == 'GET':
+        form = CreatePostForm()
+        return render(request, 'flash/post_form.html', {'form': form, 'author': author })
+    elif request.method == 'POST':
+        form = CreatePostForm(request.POST)
+        if form.is_valid():
+            new_s = form.cleaned_data['url']
+            get_s = new_s.split("/")
+            if get_s[2]:
+                got_s = get_s[2]
+            else:
+                got_s = get_s[0]
+            try:
+                source = Source.objects.get(base_url=got_s)
+            except Source.DoesNotExist:
+                source = None
+            if source:
+                valid_s = source
+            else:
+                valid_s = Source.objects.create(base_url=got_s, title=got_s)
+            Poster = Post.objects.create(author=author,title=form.cleaned_data['title'],
+                url=new_s, source=valid_s)
+            if Poster:
+                messages.success(request, "Your Post has been added %s!" % author , extra_tags='success alert-success' )
+            return render(request, 'index.html', {'current_user': author})
+        else:
+            messages.error(request, "something went wrong, check logs", extra_tags='danger alert-danger' )
+            return render(request, 'flash/post_form.html', {'form': form, 'author': author})
+
+
+
+
+
+
+
 
 
 
