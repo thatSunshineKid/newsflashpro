@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.views import generic
 from django.shortcuts import render, get_object_or_404
 from django.contrib import messages
-
+from django.http import HttpResponseRedirect
 from .forms import CreateAuthorForm, CreatePostForm
 
 # Create your views here.
@@ -190,7 +190,8 @@ def AddPost(request):
                 url=new_s, source=valid_s)
             if Poster:
                 messages.success(request, "Your Post has been added %s!" % author , extra_tags='success alert-success' )
-            return render(request, 'index.html', {'current_user': author, 'posts': Post.objects.all()})
+                return HttpResponseRedirect('/flash/')
+            # return render(request, 'index.html', {'current_user': author, 'posts': Post.objects.all()})
         else:
             messages.error(request, "something went wrong, check logs", extra_tags='danger alert-danger' )
             return render(request, 'flash/post_form.html', {'form': form, 'author': author})
