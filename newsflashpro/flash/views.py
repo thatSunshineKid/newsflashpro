@@ -88,7 +88,7 @@ class CreateAuthorView( SuccessMessageMixin, CreateView):
 class AuthorCreate(CreateView):
     model= Author
 
-
+# other attempt at creating post, was dumb to try and use Class here. Classes aren't as flexible dummy.
 # class PostCreate(LoginRequiredMixin, CreateView):
 #     login_url = '/login'
 #     permission_denied_message = "Sorry, you must login to your account first to Post."
