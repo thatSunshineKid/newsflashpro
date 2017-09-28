@@ -10,7 +10,8 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 
 from django.contrib.auth.decorators import login_required
-
+from django.utils.decorators import method_decorator
+from django.views import View
 from .models import Author, Post, Source
 
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -135,41 +136,35 @@ class AuthorCreate(CreateView):
 #         # use get to grab author, use post to get source of article, and save them mofos.
 
 
-#     def form_valid(self, form):
-#         # user = self.request.user
-#         title = form.cleaned_data['title']
-#         url = form.cleaned_data['url']
-#         author = Author.objects.get(user=self.request.user)
-#         source = self.request.POST['source']
-#         # source_url = url.split("/")
-#         # if source_url[2]:
-#         #     real_source = source_url[2]
-#         # else:
-#         #     real_source = source_url[0]
-#         # try:
-#         #     match = Source.objects.get(base_url=real_source)
-#         # except Source.DoesNotExist:
-#         #     match = None
-#         # if match:
-#         #     add_source = match
-#         # else:
-#         #     add_source = Source.objects.create(base_url=real_source, title=real_source)
-#         # post = form.save(commit=False)
-#         # post.author = user.author
-#         # post.source = add_source
-#         # post.save()
-#         Poster = Post.objects.create(author=author, title=title, url=url, source=source)
-#         if Poster:
-#             messages.success(self.request, "Your Post has been added %s!" % user.username, extra_tags='success alert-success' )
-#             return super(PostCreate, self).form_valid(form)
+@method_decorator(login_required, name='get')
+@method_decorator(login_required, name='post')
+class AddPost(View):
+    """ Class based view to allow for interaction with authored posts """
+    def get(self, request):
+        """Method to return CreatePostFom to the user
+            Args:
+                request <obj>: HTTP request object
+            Returns:
+                HTTP response with form and template variables
+        """
 
-@login_required()
-def AddPost(request):
-    author = request.user.author
-    if request.method == 'GET':
+        author = request.user.author
         form = CreatePostForm()
-        return render(request, 'flash/post_form.html', {'form': form, 'author': author })
-    elif request.method == 'POST':
+        return render(
+            request,
+            'flash/post_form.html',
+            {'form': form, 'author': author}
+        )
+
+    def post(self, request):
+        """Method to create authored posts
+            Args:
+                request <obj>: HTTP request object
+            Returns:
+                HTTP response(200)
+                HTTP redirect(302)
+        """
+        author = request.user.author
         form = CreatePostForm(request.POST)
         if form.is_valid():
             new_s = form.cleaned_data['url']
@@ -186,23 +181,27 @@ def AddPost(request):
                 valid_s = source
             else:
                 valid_s = Source.objects.create(base_url=got_s, title=got_s)
-            Poster = Post.objects.create(author=author,title=form.cleaned_data['title'],
-                url=new_s, source=valid_s)
+            Poster = Post.objects.create(
+                author=author,
+                title=form.cleaned_data['title'],
+                url=new_s,
+                source=valid_s
+            )
             if Poster:
-                messages.success(request, "Your Post has been added %s!" % author , extra_tags='success alert-success' )
+                messages.success(
+                    request,
+                    "Your Post has been added %s!" % author,
+                    extra_tags='success alert-success'
+                )
                 return HttpResponseRedirect('/flash/')
-            # return render(request, 'index.html', {'current_user': author, 'posts': Post.objects.all()})
         else:
-            messages.error(request, "something went wrong, check logs", extra_tags='danger alert-danger' )
-            return render(request, 'flash/post_form.html', {'form': form, 'author': author})
-
-
-
-
-
-
-
-
-
-
-
+            messages.error(
+                request,
+                "something went wrong, check logs",
+                extra_tags='danger alert-danger'
+            )
+            return render(
+                request,
+                'flash/post_form.html',
+                {'form': form, 'author': author}
+            )
