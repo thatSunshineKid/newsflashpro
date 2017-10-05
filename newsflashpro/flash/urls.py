@@ -18,7 +18,7 @@ urlpatterns = [
   # url(r'^flash/', include('flash.urls')),
   url(r'^accounts/login/$', auth_views.LoginView.as_view()),
   url(r'^flash/$', index, name='index'),
-  url(r'^create/', AddPost, name="AddPost"),
+  url(r'^create/', AddPost.as_view(), name="AddPost"),
   url(r'^signup/', CreateAuthorView.as_view(), name="CreateAuthorView"),
 
 
