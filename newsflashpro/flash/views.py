@@ -32,6 +32,13 @@ def index(request):
         context={'current_user':current_user, 'posts': posts},
     )
 
+def about(request):
+    return render(
+        request,
+        'about.html',
+        context={'your': Mom },
+    )
+
 
 class CreateAuthorView( SuccessMessageMixin, CreateView):
     # login_url = reverse_lazy('users:login')
@@ -205,3 +212,27 @@ class AddPost(View):
                 'flash/post_form.html',
                 {'form': form, 'author': author}
             )
+
+
+@login_required()
+def ProfileView(request):
+  current_user = request.user.author
+  posts = Post.objects.filter(author_id=current_user.id)
+  phone_number = current_user.phone_number
+
+
+  return render(
+        request,
+        'flash/ProfileView.html',
+        context={'current_user':current_user, 'posts': posts, 'phone_number':phone_number},
+    )
+
+
+
+
+
+
+
+
+
+

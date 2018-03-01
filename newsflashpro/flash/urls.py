@@ -5,7 +5,7 @@ from django.conf.urls.static import static
 from django.conf import settings
 from django.contrib.auth import views as auth_views
 
-from .views import index
+from .views import index, ProfileView
 
 from .views import AddPost, CreateAuthorView
 
@@ -18,8 +18,10 @@ urlpatterns = [
   # url(r'^flash/', include('flash.urls')),
   url(r'^accounts/login/$', auth_views.LoginView.as_view()),
   url(r'^flash/$', index, name='index'),
+  # url(r'^about/$', about, name='about'),
   url(r'^create/', AddPost.as_view(), name="AddPost"),
   url(r'^signup/', CreateAuthorView.as_view(), name="CreateAuthorView"),
+  url(r'^me/', ProfileView, name="ProfileView"),
 
 
 

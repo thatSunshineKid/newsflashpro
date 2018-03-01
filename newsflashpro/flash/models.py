@@ -1,5 +1,7 @@
 from django.db import models
 
+import uuid
+
 from django.contrib.auth.models import User
 
 from django.urls import reverse #Used to generate URLs by reversing the URL patterns
@@ -29,6 +31,7 @@ class Post(models.Model):
     url = models.URLField(max_length=1000)
     source = models.ForeignKey('Source', on_delete=models.CASCADE, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    #channel = models.ForeignKey('Channel', on_delete=models.CASCADE, null=True)
 
     class Meta:
          ordering = ['-created_at']
@@ -63,5 +66,17 @@ class Source(models.Model):
         """
         return reverse('source-detail', args=[str(self.id)])
 
+# class Channel(models.Model):
+#     name = models.CharField(max_length=200)
+#     follow_id = models.UUIDField(editable=True)
+#     # channel_id = models.UUIDField(params=addem to the world)
+#     # id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
+#     def __str__(self):
+#         return self.name
 
+#     def get_absolute_url(self):
+#         """
+#         Returns the url to access a particular channel.
+#         """
+#         return reverse('channel-detail', args=[str(self.id)])
