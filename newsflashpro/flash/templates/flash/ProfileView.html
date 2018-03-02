@@ -1,0 +1,38 @@
+{% extends "base_generic.html" %}
+
+
+{% block login %}
+  <a href="/flash" class="btn btn-outline-info" style="color:black;">Back to feed</a>
+{% endblock %}
+
+{% block sidebar%}
+<a href="/" class="btn btn-outline-warning" style="color:black;">Go Back</a>
+{% endblock %}
+
+
+{% block content %}
+<h2>{{ current_user }}'s Profile</h2>
+  <h4 >Phone number: {{ phone_number }}</h4>
+   <h4>My Posts:</h4>
+  <br>
+  {% for post in posts %}
+  <div class="well">
+  <ul class="list-group single-post">
+    <li class="list-group-item"><strong>Title: </strong>&nbsp;{{ post.title }}</li>
+    <li class="list-group-item list-group-item-success d-flex justify-content-between">
+      <div><strong>By: </strong>&nbsp;{{ post.author }}</div>
+      <div><strong>Tags:</strong>&nbsp;TBD, coming soon, more</div>
+    </li>
+    <li class="list-group-item list-group-item-info d-flex justify-content-between">
+        <div><strong>Source:&nbsp;</strong>{{ post.source }}</div>
+
+        <div>
+          <strong>Link:&nbsp;</strong><a href="{{ post.url }}" target="_blank">Click to View Story</a>
+        </div>
+    </li>
+  </ul>
+</div>
+  <br>
+  {% endfor %}
+
+{% endblock %}
